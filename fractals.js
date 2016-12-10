@@ -58,11 +58,7 @@ function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax){
 					count++;
 				}	
 
-				if(count < max_iter){
-					count = Math.log();
-				}	
-
-				context.fillStyle = lerpcolor(colors[Math.floor(count)], colors[Math.floor(count) + 1], count);
+				context.fillStyle = colors[count];
 				context.fillRect(x, y, 0.5, 0.5);
 			}
 		}
@@ -95,19 +91,6 @@ function palette(max_iter){
 	return colors;
 }
 
-// interpolates two colors
-function lerpColor(a, b, amount) { 
-
-    var ah = parseInt(a.replace(/#/g, ''), 16),
-        ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
-        bh = parseInt(b.replace(/#/g, ''), 16),
-        br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
-        rr = ar + amount * (br - ar),
-        rg = ag + amount * (bg - ag),
-        rb = ab + amount * (bb - ab);
-
-    return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
-}
 
 // Complex number operands
 
@@ -132,4 +115,3 @@ function sin(complex){
         return {"imaginary": Math.cos(complex["real"])*Math.sinh(complex["imaginary"]), 
 		"real": Math.sin(complex["real"])*Math.cosh(complex["imaginary"])};
 }
-
