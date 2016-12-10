@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <title> Mandelbrot </title>
+  <style>
+	body {
+	 margin: 0;
+	}
+
+	#container {
+	 position: relative;
+	}
+
+	#map {
+	 position: absolute;
+	 top: 0;
+	 left: 0;
+	}
+
+	#load {
+	 position: absolute;
+	 background: #000000;
+	 color:  #FFFFFF;
+	 padding: 4px;
+	 margin: 10px;
+	 opacity: 0.7;
+	}
+  </style>
+  <script src="fractals.js"></script>
+ </head>
+ <body onload="init()" onresize="init()">
+  <div id="container">
+   <div id="load">Loading...&nbsp;&nbsp;&nbsp;</div>
+   <canvas id="map"></canvas>
+  </div>
+  <script>
+   var map = document.getElementById("map");
+   var loading = document.getElementById("load");  
+   map.addEventListener('dblclick', zoom_in);
+   map.addEventListener("click", fractal_move);
+   var timer;
+   var max_iter = 18;
+   var width = window.innerWidth;
+   var height = window.innerHeight;
+   var zoom = 3;
+   var xmin = -1;
+   var xmax = 2.5;
+   var ymin = -1;
+   var ymax = 1;
+
+   // shows the load signal
+   function show_load(){
+	load.style.opacity = 0.7;
+   }
+
+   // hides the load signal
+   function hide_load(){
+	load.style.opacity = 0;
+   }
+
+   // initializes the width and height, triggered on loading and on resizing page
+   function init() {
+	width = window.innerWidth;
+   	height = window.innerHeight;
+   	map.width = width;
+   	map.height = height;
+	fractal_draw();
+   }
+
+   // Redraws the fractal with the current parameters
+   function fractal_draw() {
+	show_load();	
+
+	clearInterval(timer);
+   	setTimeout(function(){
+		var timer = graph(map, max_iter, zoom*xmin, zoom*xmax, zoom*ymin, zoom*ymax);
+		hide_load();
+	}, 1);
+   }
+
+   // Shifts the fractal so that the clicked point is at the center of the screen 
+   function fractal_move(event) {
+	var xrange = xmax - xmin;
+	var yrange = ymax - ymin;
+	var xf = (event.clientX-width/2)*xrange/width;
+	var yf = (event.clientY-height/2)*yrange/height;
+	xmin -= xf;
+	xmax -= xf;
+	ymin -= yf;
+	ymax -= yf;
+	fractal_draw();
+   }
+
+   // Zooms in on the fractal by a factor of 2/3 (redraws fractal when triggered)
+   function zoom_in() {
+	zoom*=2/3;
+	fractal_draw();
+   }
+
+  </script>
+ </body>
+</html>
