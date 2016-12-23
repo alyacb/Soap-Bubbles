@@ -31,16 +31,22 @@
  </head>
  <body onload="init()" onresize="init()">
   <div id="container">
-   <div id="load">Loading...&nbsp;&nbsp;&nbsp;</div>
+   <div id="load">Loading...&nbsp;&nbsp;&nbsp;
+    <input id="informer" value="draw" style="width: 0; visibility: hidden;">
+   </div>
    <canvas id="map"></canvas>
   </div>
   <script>
    var map = document.getElementById("map");
    var loading = document.getElementById("load");  
+  
+   // This element exists purely to 'inform' on the fractal's state, so that loading can react appropriately, for e.g.
+   var informer = document.getElementById("informer");
+  
    map.addEventListener('dblclick', zoom_in);
    map.addEventListener("click", fractal_move);
-   var timer;
-   var max_iter = 18;
+   var timer = -1;
+   var max_iter = 23;
    var width = window.innerWidth;
    var height = window.innerHeight;
    var zoom = 3;
@@ -54,9 +60,14 @@
 	load.style.opacity = 0.7;
    }
 
-   // hides the load signal
+   // hides the load signal, and clears timers
    function hide_load(){
-	load.style.opacity = 0;
+	if(informer.value == "hide"){ // it is time to hide
+		load.style.opacity = 0;
+		informer.value="done";
+		clearInterval(timer);
+		timer = -1;
+	}
    }
 
    // initializes the width and height, triggered on loading and on resizing page
@@ -65,17 +76,19 @@
    	height = window.innerHeight;
    	map.width = width;
    	map.height = height;
+	setInterval(hide_load, 100);
 	fractal_draw();
    }
 
    // Redraws the fractal with the current parameters
    function fractal_draw() {
 	show_load();	
+	informer.value = "draw";
 
-	clearInterval(timer);
    	setTimeout(function(){
-		var timer = graph(map, max_iter, zoom*xmin, zoom*xmax, zoom*ymin, zoom*ymax);
-		hide_load();
+		clearInterval(timer);
+		timer = -1;
+		timer = graph(map, max_iter, zoom*xmin, zoom*xmax, zoom*ymin, zoom*ymax, informer);
 	}, 1);
    }
 

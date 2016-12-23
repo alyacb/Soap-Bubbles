@@ -7,7 +7,7 @@
  graphs the fractal on the given canvas using the number of iterations specified, 
    and within the range of values specified
 */
-function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax){
+function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax, informer){
 	var context = canvas.getContext("2d");
 
 	var threshold = 4;
@@ -33,9 +33,10 @@ function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax){
 	var x = xcurr;
 	var ycurr = 0;
 	var y = ycurr;
+	var l2 = Math.log(2);
 	var timer = setInterval(function() {
 		if(xcurr>=xdiff && ycurr>=ydiff){
-			clearInterval(timer);
+			informer.value = "hide";
 			return;
 		}
  
@@ -53,12 +54,22 @@ function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax){
 				var c = {"real": xac, "imaginary": yac};
 				var count = 0;
 				var z = {"imaginary": 0, "real": 0};
-				while(magnitude2(z) < threshold && count < max_iter){
+				var m = 0;
+				while(m < threshold && count < max_iter){
 					z = eval(z, c);
 					count++;
+					m = magnitude2(z);
 				}	
 
-				context.fillStyle = colors[count];
+				var color = colors[count];
+				/*if(count < max_iter-1){
+					var color2 = colors[count + 1];
+					var log_zn = Math.log(m)/2;
+    					var nu = Math.log(log_zn/l2)/l2;
+					color = linear_interpolate(color, color2, 1-nu);
+				}*/
+
+				context.fillStyle = color;
 				context.fillRect(x, y, 0.5, 0.5);
 			}
 		}
@@ -70,27 +81,48 @@ function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax){
 
 // Evaluates the equation using the given variable and constant values
 function eval(variable, constant){
-	var z = {"imaginary": Math.abs(variable["imaginary"]), "real": Math.abs(variable["real"])};
+	var z = //{"imaginary": Math.abs(variable["imaginary"]), "real": Math.abs(variable["real"])};
+		variable;
 	var mult = multiply(z, z);
 	return add(constant, mult);	
 }
 
 // Colors
 
+// converts an integer to a hex color (assumes range of number is 0 to 256^3)
+function int_to_hex(num){
+	var color = ("000000" + (num).toString(16));
+        return "#" + color.substring(color.length - 6, color.length);
+}
+
+// converts a hex color to an int
+function hex_to_int(color){
+	return parseInt(color.substring(1, 7), 16);
+}
+
+// interpolates an intermediate color between two colors given
+function linear_interpolate(color1, color2, slope){
+	var num1 = hex_to_int(color1);
+	var num2 = hex_to_int(color2);
+	var num = Math.abs(num1 + slope*(num2-num1));
+	return int_to_hex(Math.floor(num));
+}
+
 // generates a color palette
 function palette(max_iter){
-	var colorf = 256*256*256/max_iter;
+	var colorf = hex_to_int('#3300AA');
         var colors = new Array(max_iter+1);
 
+	var r = //Math.random()*256;
+		255;
         for(var i=0; i<max_iter; i++){
-                var str = ("000000" + (i*colorf).toString(16));
-                colors[i] = "#" + str.substring(str.length - 7, str.length - 1);
+                colors[i] = int_to_hex(colorf);
+		colorf += r*i;
         }
         colors[max_iter] = "#000000";
 
 	return colors;
 }
-
 
 // Complex number operands
 
