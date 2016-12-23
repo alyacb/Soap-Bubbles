@@ -8,34 +8,44 @@
 	 margin: 0;
 	}
 
-	#container {
-	 position: relative;
+	div {
+	 background: #000000;
+         font-size: 12px;
+         color: #FFFFFF;
+         padding: 5px;
 	}
 
 	#map {
 	 position: absolute;
 	 top: 0;
 	 left: 0;
+	 z-index: -1;
 	}
 
 	#load {
 	 position: absolute;
-	 background: #000000;
-	 color:  #FFFFFF;
-	 padding: 4px;
+	 bottom: 0;
+	 border-radius: 5px;
 	 margin: 10px;
-	 opacity: 0.7;
+	 opacity: 0;
+	}
+	
+	#tools {
+	 display: inline;
 	}
   </style>
   <script src="fractals.js"></script>
  </head>
  <body onload="init()" onresize="init()">
-  <div id="container">
-   <div id="load">Loading...&nbsp;&nbsp;&nbsp;
-    <input id="informer" value="draw" style="width: 0; visibility: hidden;">
-   </div>
-   <canvas id="map"></canvas>
+  <div>
+   <table id="tools"><tr>
+    <td> One </td> <td> Two </td> <td> Three </td>
+   </tr></table>
   </div>
+  <div id="load">Loading...&nbsp;&nbsp;&nbsp;
+   <input id="informer" value="draw" style="display: none;">
+  </div>
+  <canvas id="map"></canvas>
   <script>
    var map = document.getElementById("map");
    var loading = document.getElementById("load");  
@@ -46,6 +56,7 @@
    map.addEventListener('dblclick', zoom_in);
    map.addEventListener("click", fractal_move);
    var timer = -1;
+   var loadTimer = -1;
    var max_iter = 23;
    var width = window.innerWidth;
    var height = window.innerHeight;
@@ -55,19 +66,36 @@
    var ymin = -1;
    var ymax = 1;
 
+   // clears loadTimer (timer for loading display)
+   function clear_loadTimer(){
+	if(loadTimer != -1){
+                clearInterval(loadTimer);
+                loadTimer = -1;
+        }	
+   }
+
    // shows the load signal
    function show_load(){
-	load.style.opacity = 0.7;
+	clear_loadTimer();
+	loadTimer = setInterval(function(){
+		if(Number(loading.style.opacity)<1){
+			loading.style.opacity = Number(loading.style.opacity) + 0.05;
+		} else {
+			clear_loadTimer();
+		}
+	}, 50);
    }
 
    // hides the load signal, and clears timers
    function hide_load(){
-	if(informer.value == "hide"){ // it is time to hide
-		load.style.opacity = 0;
-		informer.value="done";
-		clearInterval(timer);
-		timer = -1;
-	}
+	clear_loadTimer();
+	loadTimer = setInterval(function() {
+               	if(Number(loading.style.opacity)>0){
+                       	loading.style.opacity = Number(loading.style.opacity) - 0.05;
+               	} else {
+                       	clear_loadTimer();
+               	}
+       	}, 50);
    }
 
    // initializes the width and height, triggered on loading and on resizing page
@@ -76,7 +104,14 @@
    	height = window.innerHeight;
    	map.width = width;
    	map.height = height;
-	setInterval(hide_load, 100);
+	setInterval(function() {
+		if(informer.value == "hide"){ // it is time to hide
+               		informer.value="done";
+                	clearInterval(timer);
+                	timer = -1;
+			hide_load();
+        	}
+	}, 100);
 	fractal_draw();
    }
 
