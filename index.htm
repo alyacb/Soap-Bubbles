@@ -9,19 +9,24 @@
  <body onload="init()" onresize="init()">
   <div>
    <table><tr>
-    <td style="width: 25%; padding-left: 10px; text-align: left;"> Soap Bubbles </td> <!-- title --> 
-    <td><table><tr> <!-- zoom -->
+    <td style="width: 20%; padding-left: 10px; text-align: left;"> Soap Bubbles </td> <!-- title --> 
+    <td style="padding-left: 10px; padding-right: 10px;"><table><tr> <!-- Pan -->
+     <td><input type="text" id="x" value="0"></td>
+     <td>+</td>
+     <td><input type="text" id="y" value="0i"></td>
+    </tr></table></td><!-- Zoom -->
+    <td style="padding-left: 10px; padding-right: 10px;"><table><tr>
      <td><input id="zoom" type="text" value="100%"></td>
-     <td style="border-right: 1px solid #333333;" class="button" id="zin"> + </td>
+     <td class="button" id="zin"> + </td>
      <td class="button" id="zout"> - </td>
-    </tr></table>
+    </tr></table></td><!-- Tools -->
     <td class="button" onmouseenter="toggle_info()" onmouseleave="toggle_info()"> ? </td> <!-- info -->
-    <td><table><tr> <!-- links -->
-     <td style="border-right: 1px solid #333333;"><a href="index.htm">Reset</a></td> 
+    <td><table><tr><!-- Links -->
+     <td><a href="index.htm">Reset</a></td> 
      <td><a href="https://github.com/hacktheverse/Soap-Bubbles" target="_blank">Source Code</a></td>
     </tr></table></td>
-   </tr></table>
-  </div>
+  </tr></table>
+ </div>
   <div id="load" class="float">Loading...
    <input id="informer" value="draw" style="display: none;">
   </div>
@@ -70,6 +75,47 @@
   </script>
   <canvas id="map"></canvas>
   <script> // canvas-related functions
+
+   // initialize values, set up listeners
+
+   var map = document.getElementById("map");
+   var loading = document.getElementById("load");  
+   // This element exists purely to 'inform' on the fractal's state, so that loading can react appropriately
+   var informer = document.getElementById("informer");
+   var zoomInput = document.getElementById("zoom");  
+   var realInput = document.getElementById("x");
+   var imInput = document.getElementById("y");
+
+   map.addEventListener('dblclick', function() { fractal_zoom(2/3); });
+   map.addEventListener("click", fractal_move);
+   document.getElementById("zin").addEventListener("click", function() { fractal_zoom(2/3); });
+   document.getElementById("zout").addEventListener("click", function() { fractal_zoom(3/2); });
+   realInput.addEventListener("keyup", fractal_pan);
+   imInput.addEventListener("keyup", fractal_pan);
+   zoomInput.addEventListener("keyup", function(event) {
+        if(event.keyCode == 13){ // enter key
+                var input = zoomInput.value;
+                var sym = input.indexOf("%");
+                if(sym>0){
+                        input = input.substring(0, sym);
+                }
+                if(!isNaN(input)){
+                        zoom = 100/Number(input);
+                }
+                fractal_zoom(1);
+        }
+   });
+
+   var timer = -1;
+   var loadTimer = -1;
+   var max_iter = 23;
+   var width = window.innerWidth;
+   var height = window.innerHeight;
+   var zoom = 1;
+   var xmin = -1;
+   var xmax = 2.5;
+   var ymin = -1;
+   var ymax = 1;
 
    // clears loadTimer (timer for loading display)
    function clear_loadTimer(){
@@ -124,6 +170,9 @@
    function fractal_draw() {
 	show_load();	
 	informer.value = "draw";
+	realInput.value = (xmax + xmin)/2;
+        imInput.value = (ymax + ymin)/2 + "i";
+	zoomInput.value = Math.floor(100/zoom) + "%";
 
    	setTimeout(function(){
 		clearInterval(timer);
@@ -134,14 +183,16 @@
 
    // Shifts the fractal so that the clicked point is at the center of the screen 
    function fractal_move(event) {
-	var xrange = xmax - xmin;
-	var yrange = ymax - ymin;
-	var xf = (event.clientX-width/2)*xrange/width;
-	var yf = (event.clientY-height/2)*yrange/height;
-	xmin -= xf;
-	xmax -= xf;
-	ymin -= yf;
-	ymax -= yf;
+	if(event != null){
+		var xrange = xmax - xmin;
+		var yrange = ymax - ymin;
+		var xf = (event.clientX-width/2)*xrange/width;
+		var yf = (event.clientY-height/2)*yrange/height;
+		xmin -= xf;
+		xmax -= xf;
+		ymin -= yf;
+		ymax -= yf;
+	}
 	fractal_draw();
    }
 
@@ -153,44 +204,28 @@
 	}
 	zoom*=factor;
 	fractal_draw();
-	zoomInput.value = Math.floor(100/zoom) + "%";
    }
 
-   // initialize values, set up listeners
-
-   var map = document.getElementById("map");
-   var loading = document.getElementById("load");  
-   // This element exists purely to 'inform' on the fractal's state, so that loading can react appropriately
-   var informer = document.getElementById("informer");
-   var zoomInput = document.getElementById("zoom");  
-
-   map.addEventListener('dblclick', function() { fractal_zoom(2/3); });
-   map.addEventListener("click", fractal_move);
-   document.getElementById("zin").addEventListener("click", function() { fractal_zoom(2/3); });
-   document.getElementById("zout").addEventListener("click", function() { fractal_zoom(3/2); });
-   zoomInput.addEventListener("keyup", function(event) {
+   // pan action triggered by changing pan text boxes
+   function fractal_pan(event){
 	if(event.keyCode == 13){ // enter key
-		var input = zoomInput.value;
-		var sym = input.indexOf("%");
-		if(sym>0){
-			input = input.substring(0, sym);
-		}
-		if(!isNaN(input)){
-			zoom = 100/Number(input);
-		}
-		fractal_zoom(1);
-	}
-   });
-   var timer = -1;
-   var loadTimer = -1;
-   var max_iter = 23;
-   var width = window.innerWidth;
-   var height = window.innerHeight;
-   var zoom = 1;
-   var xmin = -1;
-   var xmax = 2.5;
-   var ymin = -1;
-   var ymax = 1;
+                var real = realInput.value;
+		var imaginary = imInput.value;
+                var sym = imaginary.indexOf("i");
+                if(sym>0){
+                        imaginary = imaginary.substring(0, sym);
+                }
+                if(!isNaN(imaginary) && !isNaN(real)){
+                        var rdiff = real - (xmin + xmax)/2;
+			var idiff = imaginary - (ymin + ymax)/2;
+			xmin += rdiff;
+			ymin += idiff;
+			xmax += rdiff;
+			ymax += idiff;
+                }
+                fractal_move(null);
+        }
+   }
 
   </script>
  </body>
