@@ -3,68 +3,73 @@
  <head>
   <meta charset="UTF-8">
   <title> Mandelbrot </title>
-  <style>
-	body {
-	 margin: 0;
-	}
-
-	div {
-	 background: #000000;
-         font-size: 12px;
-         color: #FFFFFF;
-         padding: 5px;
-	}
-
-	#map {
-	 position: absolute;
-	 top: 0;
-	 left: 0;
-	 z-index: -1;
-	}
-
-	#load {
-	 position: absolute;
-	 bottom: 0;
-	 border-radius: 5px;
-	 margin: 10px;
-	 opacity: 0;
-	}
-	
-	#tools {
-	 display: inline;
-	}
-  </style>
+  <link rel="stylesheet" href="theme.css">
   <script src="fractals.js"></script>
  </head>
  <body onload="init()" onresize="init()">
   <div>
-   <table id="tools"><tr>
-    <td> One </td> <td> Two </td> <td> Three </td>
+   <table><tr>
+    <td style="width: 25%; padding-left: 10px; text-align: left;"> Soap Bubbles </td> <!-- title --> 
+    <td><table><tr> <!-- zoom -->
+     <td><input id="zoom" type="text" value="100%"></td>
+     <td style="border-right: 1px solid #333333;" class="button" id="zin"> + </td>
+     <td class="button" id="zout"> - </td>
+    </tr></table>
+    <td class="button" onmouseenter="toggle_info()" onmouseleave="toggle_info()"> ? </td> <!-- info -->
+    <td><table><tr> <!-- links -->
+     <td style="border-right: 1px solid #333333;"><a href="index.htm">Reset</a></td> 
+     <td><a href="https://github.com/hacktheverse/Soap-Bubbles" target="_blank">Source Code</a></td>
+    </tr></table></td>
    </tr></table>
   </div>
-  <div id="load">Loading...&nbsp;&nbsp;&nbsp;
+  <div id="load" class="float">Loading...
    <input id="informer" value="draw" style="display: none;">
   </div>
+  <div id="info" class="float">
+   <h1> Hello, Mortals. </h1>
+   <p> This will be my spectacular description of what Soap Bubbles does... soonish. </p>
+  </div>
+  <script> // toolbar-related functions
+   var info = true;
+   var infoDiv = document.getElementById("info");   
+   var infoTimer = -1;
+
+   // show/hide info div
+   function toggle_info() {
+	clear_infoTimer();
+        if(info){
+		infoDiv.style.display="block";
+                infoTimer = setInterval(function() {
+			if(Number(infoDiv.style.opacity)<1){
+                        	infoDiv.style.opacity = Number(infoDiv.style.opacity) + 0.1;
+               		} else {
+                        	clear_infoTimer();
+                	}
+		}, 10);
+        } else {
+		infoTimer = setInterval(function() {
+                	if(Number(infoDiv.style.opacity)>0){
+                        	infoDiv.style.opacity = Number(infoDiv.style.opacity) - 0.1;
+                	} else {
+				infoDiv.style.display = "none";
+                        	clear_infoTimer();
+                	}
+		}, 10); 
+        }
+        info = !info;           
+   }
+
+   // stop show/hide infoTimer animation
+   function clear_infoTimer() {
+	if(infoTimer != -1){
+                clearInterval(infoTimer);
+                infoTimer = -1;
+        }   
+   }
+
+  </script>
   <canvas id="map"></canvas>
-  <script>
-   var map = document.getElementById("map");
-   var loading = document.getElementById("load");  
-  
-   // This element exists purely to 'inform' on the fractal's state, so that loading can react appropriately, for e.g.
-   var informer = document.getElementById("informer");
-  
-   map.addEventListener('dblclick', zoom_in);
-   map.addEventListener("click", fractal_move);
-   var timer = -1;
-   var loadTimer = -1;
-   var max_iter = 23;
-   var width = window.innerWidth;
-   var height = window.innerHeight;
-   var zoom = 3;
-   var xmin = -1;
-   var xmax = 2.5;
-   var ymin = -1;
-   var ymax = 1;
+  <script> // canvas-related functions
 
    // clears loadTimer (timer for loading display)
    function clear_loadTimer(){
@@ -140,11 +145,52 @@
 	fractal_draw();
    }
 
-   // Zooms in on the fractal by a factor of 2/3 (redraws fractal when triggered)
-   function zoom_in() {
-	zoom*=2/3;
+   // zooms out of the fractal by the factor given- for e.g., if factor < 1, zooms in
+   //    else, zooms out
+   function fractal_zoom(factor) {
+	if(factor <= 0){
+		return;
+	}
+	zoom*=factor;
 	fractal_draw();
+	zoomInput.value = Math.floor(100/zoom) + "%";
    }
+
+   // initialize values, set up listeners
+
+   var map = document.getElementById("map");
+   var loading = document.getElementById("load");  
+   // This element exists purely to 'inform' on the fractal's state, so that loading can react appropriately
+   var informer = document.getElementById("informer");
+   var zoomInput = document.getElementById("zoom");  
+
+   map.addEventListener('dblclick', function() { fractal_zoom(2/3); });
+   map.addEventListener("click", fractal_move);
+   document.getElementById("zin").addEventListener("click", function() { fractal_zoom(2/3); });
+   document.getElementById("zout").addEventListener("click", function() { fractal_zoom(3/2); });
+   zoomInput.addEventListener("keyup", function(event) {
+	if(event.keyCode == 13){ // enter key
+		var input = zoomInput.value;
+		var sym = input.indexOf("%");
+		if(sym>0){
+			input = input.substring(0, sym);
+		}
+		if(!isNaN(input)){
+			zoom = 100/Number(input);
+		}
+		fractal_zoom(1);
+	}
+   });
+   var timer = -1;
+   var loadTimer = -1;
+   var max_iter = 23;
+   var width = window.innerWidth;
+   var height = window.innerHeight;
+   var zoom = 1;
+   var xmin = -1;
+   var xmax = 2.5;
+   var ymin = -1;
+   var ymax = 1;
 
   </script>
  </body>
