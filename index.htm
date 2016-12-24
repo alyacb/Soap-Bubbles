@@ -19,8 +19,11 @@
      <td><input id="zoom" type="text" value="100%"></td>
      <td class="button" id="zin"> + </td>
      <td class="button" id="zout"> - </td>
-    </tr></table></td><!-- Tools -->
-    <td class="button" onmouseenter="toggle_info()" onmouseleave="toggle_info()"> ? </td> <!-- info -->
+    </tr></table></td>
+    <td><table><tr><!-- Tools -->
+     <td><input type="text" id="iter"></div><!-- Max Iterations -->
+     <td class="button" onmouseenter="toggle_info()" onmouseleave="toggle_info()"> ? </td> <!-- info -->
+    </tr></table></td>
     <td><table><tr><!-- Links -->
      <td><a href="index.htm">Reset</a></td> 
      <td><a href="https://github.com/hacktheverse/Soap-Bubbles" target="_blank">Source Code</a></td>
@@ -90,6 +93,7 @@
    var zoomInput = document.getElementById("zoom");  
    var realInput = document.getElementById("x");
    var imInput = document.getElementById("y");
+   var iterInput = document.getElementById("iter");
 
    map.addEventListener('dblclick', function() { fractal_zoom(2/3); });
    map.addEventListener("click", fractal_move);
@@ -109,6 +113,15 @@
                 }
                 fractal_zoom(1);
         }
+   });
+   iterInput.addEventListener("keyup", function(event){
+	if(event.keyCode == 13){ // enter key
+		var input = iterInput.value;
+		if(!isNaN(input)){
+			max_iter = input;
+		}
+		fractal_draw();
+	}
    });
 
    var timer = -1;
@@ -178,6 +191,7 @@
 	realInput.value = (xmax + xmin)/2;
         imInput.value = (ymax + ymin)/2 + "i";
 	zoomInput.value = Math.floor(100/zoom) + "%";
+	iterInput.value = max_iter;
 
    	setTimeout(function(){
 		clearInterval(timer);
