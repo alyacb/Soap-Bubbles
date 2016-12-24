@@ -27,6 +27,8 @@ function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax, informer){
 	var xc = rxmax;
 	var yc = rymax;
 
+	var ptw = 1;
+
 	var colors = palette(max_iter);
 
 	var xcurr = 0;
@@ -46,8 +48,8 @@ function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax, informer){
 		}
 
 		context.clearRect(xcurr, ycurr, xd, yd);
-		for(x = xcurr; x<xcurr+xd; x+=0.5){
-			for(y = ycurr; y<ycurr+yd; y+=0.5){
+		for(x = xcurr; x<xcurr+xd; x+=ptw){
+			for(y = ycurr; y<ycurr+yd; y+=ptw){
 				var xac = xf*x-xc; // [-2.5, 1]
 				var yac = yf*y-yc; // [-1, 1]
 
@@ -70,7 +72,7 @@ function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax, informer){
 				}*/
 
 				context.fillStyle = color;
-				context.fillRect(x, y, 0.5, 0.5);
+				context.fillRect(x, y, ptw, ptw);
 			}
 		}
 		xcurr += xd;	
