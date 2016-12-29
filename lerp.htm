@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <title> #!!! </title>
+ </head>
+ <body>
+ <script>
+
+function linterpolate(rgb1, rgb2, g){
+	var r = Math.abs(rgb1.r - g*rgb2.r);
+	var g = Math.abs(rgb1.g - g*rgb2.g);
+	var b = Math.abs(rgb1.b - g*rgb2.b);
+	return '#'+parseInt(r, 16)+''+parseInt(g, 16)+''+parseInt(b, 16);
+}
+
+ </script>
+ </body>
+</html>
