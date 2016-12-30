@@ -207,8 +207,8 @@
 		var yrange = ymax - ymin;
 		var xf = (event.clientX-width/2)*xrange/width;
 		var yf = (event.clientY-height/2)*yrange/height;
-		xmin -= xf;
-		xmax -= xf;
+		xmin += xf;
+		xmax += xf;
 		ymin -= yf;
 		ymax -= yf;
 	}
