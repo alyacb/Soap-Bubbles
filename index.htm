@@ -21,8 +21,8 @@
      <td class="button" id="zout"> - </td>
     </tr></table></td>
     <td><table><tr><!-- Tools -->
-     <td><input type="text" id="iter"></div><!-- Max Iterations -->
-     <td class="button" onmouseenter="toggle_info()" onmouseleave="toggle_info()"> ? </td> <!-- info -->
+     <td class="button" onclick="toggle_div('info')"> ? </td> <!-- info -->
+     <td class="button" onclick="toggle_div('settings')"> X </td> <!-- settings -->
     </tr></table></td>
     <td><table><tr><!-- Links -->
      <td><a href="index.htm">Reset</a></td> 
@@ -34,7 +34,7 @@
    <input id="informer" value="draw" style="display: none;">
   </div>
   <div id="info" class="float">
-   <h1> Hello. </h1>
+   <h1> About </h1>
    <p> Soap Bubbles is a fractal-graphing website (and work in progress). Currently, you can explore the depths
        of a Mandelbrot fractal- just pan by clicking, zoom by double clicking (or using the nifty toolbar) - if you're
        very patient. Many features are on their way, so stay tuned for more exciting developments! </p>
@@ -42,41 +42,61 @@
    <br><hr><br>
    <p> Designed and Implemented by A.C.B. </p>
   </div>
-  <script> // toolbar-related functions
-   var info = true;
-   var infoDiv = document.getElementById("info");   
-   var infoTimer = -1;
+  <div id="settings" class="float">
+  <h1> Settings </h1>
+  <table>
+   <tr><td>
+    <table>
+     <tr><td>Number of Iterations:</td><td><input type="text" id="iter"></td></tr>
+    </table></td>
+    <td><table>
+     <tr><td><p class="hint">*The default is 23, but 50+ iterations provides the fractal with a greater depth/resolution.</td></tr>
+    </table></td>
+   </tr>
+  </table>
+  <br><hr><br>
+  <p> ... </p>
+  </div>
+  <script> // display/toolbar-related functions
+   var divTimer = -1;
+   var divOn = null;
 
-   // show/hide info div
-   function toggle_info() {
-	clear_infoTimer();
-        if(info){
-		infoDiv.style.display="block";
-                infoTimer = setInterval(function() {
-			if(Number(infoDiv.style.opacity)<1){
-                        	infoDiv.style.opacity = Number(infoDiv.style.opacity) + 0.1;
-               		} else {
-                        	clear_infoTimer();
-                	}
-		}, 10);
+   // show/hide div
+   function toggle_div(div_id){
+	if(divOn != null && divOn.id != div_id){
+		divOn.style.opacity = 0;
+		divOn.style.display = "none";
+	}
+	var div = document.getElementById(div_id);
+	clear_divTimer();
+        if(div.style.display!="block"){
+                div.style.display="block";
+                divTimer = setInterval(function() {
+                        if(Number(div.style.opacity)<1){
+                                div.style.opacity = Number(div.style.opacity) + 0.1;
+                        } else {
+                                clear_divTimer();
+                        }
+                }, 10);
         } else {
-		infoTimer = setInterval(function() {
-                	if(Number(infoDiv.style.opacity)>0){
-                        	infoDiv.style.opacity = Number(infoDiv.style.opacity) - 0.1;
-                	} else {
-				infoDiv.style.display = "none";
-                        	clear_infoTimer();
-                	}
-		}, 10); 
+                divTimer = setInterval(function() {
+                        if(Number(div.style.opacity)>0){
+                                div.style.opacity = Number(div.style.opacity) - 0.1;
+                        } else {
+                                div.style.display = "none";
+                                clear_divTimer();
+				divOn = null;
+                        }
+                }, 10); 
         }
-        info = !info;           
+	divOn = div;
    }
 
-   // stop show/hide infoTimer animation
-   function clear_infoTimer() {
-	if(infoTimer != -1){
-                clearInterval(infoTimer);
-                infoTimer = -1;
+   // stop div timer
+   function clear_divTimer(){
+	if(divTimer != -1){
+                clearInterval(divTimer);
+                divTimer = -1;
         }   
    }
 

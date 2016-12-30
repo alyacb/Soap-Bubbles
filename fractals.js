@@ -64,12 +64,12 @@ function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax, informer){
 				}	
 
 				var color = colors[count];
-				/*if(count < max_iter-1){
+				if(count < max_iter-1){
 					var color2 = colors[count + 1];
-					var log_zn = Math.log(m)/2;
-    					var nu = Math.log(log_zn/l2)/l2;
+					var log_zn = Math.log(m);
+    					var nu = Math.log(log_zn)/l2;
 					color = linear_interpolate(color, color2, 1-nu);
-				}*/
+				}
 
 				context.fillStyle = color;
 				context.fillRect(x, y, ptw, ptw);
