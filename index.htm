@@ -57,11 +57,14 @@
   <br><hr><br>
   <p> ... </p>
   </div>
-  <script> // display/toolbar-related functions
+  <script>
    var divTimer = -1;
    var divOn = null;
 
-   // show/hide div
+   /**
+    * Toggle, in an animated fashion, the visibility of a div
+    * @param {String} div_id - string id of div to be toggled
+    */
    function toggle_div(div_id){
 	if(divOn != null && divOn.id != div_id){
 		divOn.style.opacity = 0;
@@ -92,7 +95,9 @@
 	divOn = div;
    }
 
-   // stop div timer
+   /**
+    * Clears div timer, i.e. ends animation
+    */
    function clear_divTimer(){
 	if(divTimer != -1){
                 clearInterval(divTimer);
@@ -102,10 +107,9 @@
 
   </script>
   <canvas id="map"></canvas>
-  <script> // canvas-related functions
+  <script>
 
    // initialize values, set up listeners
-
    var map = document.getElementById("map");
    var loading = document.getElementById("load");  
    // This element exists purely to 'inform' on the fractal's state, so that loading can react appropriately
@@ -155,7 +159,9 @@
    var ymin = -1;
    var ymax = 1;
 
-   // clears loadTimer (timer for loading display)
+   /**
+    * Clears loadTimer, i.e. ends loading animation
+    */
    function clear_loadTimer(){
 	if(loadTimer != -1){
                 clearInterval(loadTimer);
@@ -163,7 +169,9 @@
         }	
    }
 
-   // shows the load signal
+   /**
+    * Shows loadTimer, in an animated way
+    */
    function show_load(){
 	clear_loadTimer();
 	loadTimer = setInterval(function(){
@@ -175,7 +183,9 @@
 	}, 50);
    }
 
-   // hides the load signal, and clears timers
+   /**
+    * Hides loadTimer, in an animated way
+    */
    function hide_load(){
 	clear_loadTimer();
 	loadTimer = setInterval(function() {
@@ -187,7 +197,9 @@
        	}, 50);
    }
 
-   // initializes the width and height, triggered on loading and on resizing page
+   /**
+    * Initializes fractal
+    */
    function init() {
 	width = window.innerWidth;
    	height = window.innerHeight;
@@ -204,7 +216,9 @@
 	fractal_draw();
    }
 
-   // Redraws the fractal with the current parameters
+   /**
+    * Draws fractal, canceling any other timers drawing on the map canvas
+    */
    function fractal_draw() {
 	show_load();	
 	informer.value = "draw";
@@ -220,7 +234,10 @@
 	}, 1);
    }
 
-   // Shifts the fractal so that the clicked point is at the center of the screen 
+   /**
+    * Centers the fractal on the point clicked.
+    * @param {Event} event - event triggering the move
+    */
    function fractal_move(event) {
 	if(event != null){
 		var xrange = xmax - xmin;
@@ -235,8 +252,10 @@
 	fractal_draw();
    }
 
-   // zooms out of the fractal by the factor given- for e.g., if factor < 1, zooms in
-   //    else, zooms out
+   /**
+    * Zooms fractal
+    * @param {Number} factor - factor by which to decrease zoom
+    */
    function fractal_zoom(factor) {
 	if(factor <= 0){
 		return;
@@ -245,7 +264,10 @@
 	fractal_draw();
    }
 
-   // pan action triggered by changing pan text boxes
+   /**
+    * Pan action triggered by panning text boxes
+    * @param {Event} event - event that tiggered pan
+    */
    function fractal_pan(event){
 	if(event.keyCode == 13){ // enter key
                 var real = realInput.value;
