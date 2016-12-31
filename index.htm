@@ -113,26 +113,10 @@
         }   
    }
 
-   /**
-    * Changes color of selected icon, opens div
-    * @param {Integer} icon - icon element index
-    * @param {String} div_id - id of div to open
-    */
-   function color_change(icon, div_id){
-	toggle_div(div_id);
-	for(var i=0; i<buttons.length; i++){
-        	if(icon == i && buttons[icon].style.color!='#AABBDD'){
-                	buttons[icon].style.color = '#8899FF';
-        	} else {
-               		buttons[i].style.color = '#FFFFFF';
-       		}
-	}
-   }
-
    // Add event listeners
    var buttons = [document.getElementById("sett_b"), document.getElementById("info_b")];
-   buttons[0].addEventListener("click", function(event) {color_change(0, "settings");});
-   buttons[1].addEventListener("click", function(event) {color_change(1, "info");});
+   buttons[0].addEventListener("click", function(event) {toggle_div("settings");});
+   buttons[1].addEventListener("click", function(event) {toggle_div("info");});
 
   </script>
   <canvas id="map"></canvas>

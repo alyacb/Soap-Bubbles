@@ -77,7 +77,7 @@ tr {
  padding: 0;
 }
 
-td.button {
+td.icon, td.button {
  font-size: 30px;
  vertical-align: inherit;
 }
@@ -87,6 +87,7 @@ td.button:hover {
  color: #AAFFCC;
  vertical-align: inherit;
 }
+
 
 table {
  height: 100%;
