@@ -29,8 +29,8 @@
      </tr></table></td>
     </tr></table></td>
     <td style="width: 75px;"><table><tr><!-- Tools -->
-     <td class="button" onclick="toggle_div('info')"><i class="material-icons">info</i></td> <!-- info -->
-     <td class="button" onclick="toggle_div('settings')"><i class="material-icons">settings</i></td> <!-- settings -->
+     <td class="button" id="info_b"><i class="material-icons">info</i></td> <!-- info -->
+     <td class="button" id="sett_b"><i class="material-icons">settings</i></td> <!-- settings -->
     </tr></table></td>
     <td><table><tr><!-- Links -->
      <td><a href="index.htm">Reset</a></td> 
@@ -60,7 +60,7 @@
    </tr>
    <tr>
     <td><p> Enable Smooth Coloring: <input type="checkbox" id="smooth" style="width: 25px;"></p>
-     <p class="hint"> * Enabled by default, but disabling decreases load-times. </p></td>
+     <p class="hint"> * Enabled by default, but disabling decreases load-times and shows banding. </p></td>
    </tr>
   </table>
   <br><hr><br>
@@ -112,6 +112,27 @@
                 divTimer = -1;
         }   
    }
+
+   /**
+    * Changes color of selected icon, opens div
+    * @param {Integer} icon - icon element index
+    * @param {String} div_id - id of div to open
+    */
+   function color_change(icon, div_id){
+	toggle_div(div_id);
+	for(var i=0; i<buttons.length; i++){
+        	if(icon == i && buttons[icon].style.color!='#AABBDD'){
+                	buttons[icon].style.color = '#8899FF';
+        	} else {
+               		buttons[i].style.color = '#FFFFFF';
+       		}
+	}
+   }
+
+   // Add event listeners
+   var buttons = [document.getElementById("sett_b"), document.getElementById("info_b")];
+   buttons[0].addEventListener("click", function(event) {color_change(0, "settings");});
+   buttons[1].addEventListener("click", function(event) {color_change(1, "info");});
 
   </script>
   <canvas id="map"></canvas>
