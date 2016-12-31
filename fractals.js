@@ -169,7 +169,6 @@ function palette(max_iter){
 	var factor = Math.PI/(2*Math.max(1, max_iter-1));
         for(var i=0; i<max_iter; i++){
 		colors[i] = linear_interpolate(end_color, mid_color, Math.sin(i*factor));
-		console.log(colors[i]);
         }
         colors[max_iter] = "#000000";
 
