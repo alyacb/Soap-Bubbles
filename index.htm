@@ -256,10 +256,12 @@
                 }
                 if(!isNaN(imaginary) && !isNaN(real)){
                         var rdiff = real - (xmin + xmax)/2;
+			rdiff/=zoom;
 			var idiff = imaginary - (ymin + ymax)/2;
-			xmin += rdiff;
+			idiff/=zoom;
+			xmin -= rdiff;
 			ymin += idiff;
-			xmax += rdiff;
+			xmax -= rdiff;
 			ymax += idiff;
                 }
                 fractal_move(null);
