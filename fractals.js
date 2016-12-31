@@ -64,11 +64,13 @@ function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax, informer){
 				}	
 
 				var color = colors[count];
-				if(count < max_iter-1){
-					var color2 = colors[count + 1];
-					var log_zn = Math.log(m);
-    					var nu = Math.log(log_zn)/l2;
-					color = linear_interpolate(color, color2, 1-nu);
+				if(count < max_iter - 1){
+					var log_zn = Math.log(m)/2;
+    					var nu = Math.log(log_zn/l2)/l2;
+					var it = count + 1 - nu;
+					color = colors[Math.floor(it)];
+					var color2 = colors[Math.floor(it)+1];
+					color = linear_interpolate(color, color2, it%1);
 				}
 
 				context.fillStyle = color;
@@ -104,22 +106,35 @@ function hex_to_int(color){
 
 // interpolates an intermediate color between two colors given
 function linear_interpolate(color1, color2, slope){
-	var num1 = hex_to_int(color1);
-	var num2 = hex_to_int(color2);
-	var num = Math.abs(num1 + slope*(num2-num1));
-	return int_to_hex(Math.floor(num));
+	var r1 = parseInt(color1.substring(1,3), 16);
+	var r2 = parseInt(color2.substring(1,3), 16);
+	var r = Math.floor(Math.abs(r1 + slope*(r2 - r1))).toString(16);
+	r = (r.length == 2) ? r : "0" + r;
+	
+	var g1 = parseInt(color1.substring(3,5), 16);
+	var g2 = parseInt(color2.substring(3,5), 16);
+	var g = Math.floor(Math.abs(g1 + slope*(g2 - g1))).toString(16);
+	g = (g.length == 2) ? g : "0" + g;
+
+	var b1 = parseInt(color1.substring(5,7), 16);
+	var b2 = parseInt(color2.substring(5,7), 16);
+	var b = Math.floor(Math.abs(b1 + slope*(b2 - b1))).toString(16);
+	b = (b.length == 2) ? b : "0" + b;
+
+	var c = "#" + r + g + b;
+	return c;
 }
 
 // generates a color palette
 function palette(max_iter){
-	var colorf = hex_to_int('#3300AA');
+	var end_color = '#993399';
+	var mid_color = '#AAAA66';
         var colors = new Array(max_iter+1);
 
-	var r = //Math.random()*256;
-		255;
+	var factor = Math.PI/(2*Math.max(1, max_iter-1));
         for(var i=0; i<max_iter; i++){
-                colors[i] = int_to_hex(colorf);
-		colorf += r*i;
+		colors[i] = linear_interpolate(end_color, mid_color, Math.sin(i*factor));
+		console.log(colors[i]);
         }
         colors[max_iter] = "#000000";
 

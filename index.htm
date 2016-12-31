@@ -227,8 +227,8 @@
 		var yrange = ymax - ymin;
 		var xf = (event.clientX-width/2)*xrange/width;
 		var yf = (event.clientY-height/2)*yrange/height;
-		xmin += xf;
-		xmax += xf;
+		xmin -= xf;
+		xmax -= xf;
 		ymin -= yf;
 		ymax -= yf;
 	}
@@ -256,10 +256,12 @@
                 }
                 if(!isNaN(imaginary) && !isNaN(real)){
                         var rdiff = real - (xmin + xmax)/2;
+			rdiff/=zoom;
 			var idiff = imaginary - (ymin + ymax)/2;
-			xmin += rdiff;
+			idiff/=zoom;
+			xmin -= rdiff;
 			ymin += idiff;
-			xmax += rdiff;
+			xmax -= rdiff;
 			ymax += idiff;
                 }
                 fractal_move(null);
