@@ -2,20 +2,24 @@
 <html>
  <head>
   <meta charset="UTF-8">
-  <title> Mandelbrot </title>
+  <title> Soap Bubbles </title>
   <link rel="stylesheet" href="theme.css">
   <script src="fractals.js"></script>
  </head>
  <body onload="init()" onresize="init()">
   <div>
    <table><tr>
-    <td style="width: 20%; padding-left: 10px; text-align: left;"> Soap Bubbles </td> <!-- title --> 
+    <td class="title"> 
+     <tt>S</tt><tt>o</tt><tt>a</tt><tt>p</tt> 
+     <tt>B</tt><tt>u</tt><tt>b</tt><tt>b</tt><tt>l</tt><tt>e</tt><tt>s</tt> </td>
     <td style="padding-left: 10px; padding-right: 10px;"><table><tr> <!-- Pan -->
+     <td> Center: </td>
      <td><input type="text" id="x" value="0"></td>
-     <td>+</td>
+     <td style="width: 10px;">+</td>
      <td><input type="text" id="y" value="0i"></td>
     </tr></table></td><!-- Zoom -->
     <td style="padding-left: 10px; padding-right: 10px;"><table><tr>
+     <td> Zoom: </td>
      <td><input id="zoom" type="text" value="100%"></td>
      <td class="button" id="zin"> + </td>
      <td class="button" id="zout"> - </td>

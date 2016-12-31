@@ -21,6 +21,23 @@ p.hint {
  text-align: left;
 }
 
+td.title {
+ width: 110px; 
+ padding-left: 10px; 
+ text-align: left; 
+ font-size: 14pt;
+}
+
+tt {
+ color: #EEBBEE;
+ text-decoration: none;
+ font-family: parent;
+}
+
+tt:hover {
+ color: #AADDDD;
+}
+
 #map {
  position: absolute;
  top: 0;
@@ -48,7 +65,7 @@ div.float {
 }
 
 td {
- font-size: 20px;
+ font-size: 10pt;
  text-align: center;
  vertical-align: middle;
 }
