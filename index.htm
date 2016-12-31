@@ -3,6 +3,8 @@
  <head>
   <meta charset="UTF-8">
   <title> Soap Bubbles </title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
   <link rel="stylesheet" href="theme.css">
   <script src="fractals.js"></script>
  </head>
@@ -21,16 +23,17 @@
     <td style="padding-left: 10px; padding-right: 10px;"><table><tr>
      <td> Zoom: </td>
      <td><input id="zoom" type="text" value="100%"></td>
-     <td class="button" id="zin"> + </td>
-     <td class="button" id="zout"> - </td>
+     <td class="button" id="zin" style="padding-left: 5px; width:10px;"><i class="material-icons">add_circle</i></td>
+     <td class="button" id="zout"><i class="material-icons">remove_circle</i></td>
     </tr></table></td>
-    <td><table><tr><!-- Tools -->
-     <td class="button" onclick="toggle_div('info')"> ? </td> <!-- info -->
-     <td class="button" onclick="toggle_div('settings')"> X </td> <!-- settings -->
+    <td style="width: 75px;"><table><tr><!-- Tools -->
+     <td class="button" onclick="toggle_div('info')"><i class="material-icons">info</i></td> <!-- info -->
+     <td class="button" onclick="toggle_div('settings')"><i class="material-icons">settings</i></td> <!-- settings -->
     </tr></table></td>
     <td><table><tr><!-- Links -->
      <td><a href="index.htm">Reset</a></td> 
      <td><a href="https://github.com/hacktheverse/Soap-Bubbles" target="_blank">Source Code</a></td>
+     <td><a href="https://en.wikipedia.org/wiki/Fractal" target="_blank">Learn More</a></td>
     </tr></table></td>
   </tr></table>
  </div>
@@ -59,7 +62,6 @@
    </tr>
   </table>
   <br><hr><br>
-  <p> ... </p>
   </div>
   <script>
    var divTimer = -1;
@@ -226,8 +228,8 @@
    function fractal_draw() {
 	show_load();	
 	informer.value = "draw";
-	realInput.value = (xmax + xmin)/2;
-        imInput.value = (ymax + ymin)/2 + "i";
+	realInput.value = ((xmax + xmin)/2).toFixed(2);
+        imInput.value = ((ymax + ymin)/2).toFixed(2) + "i";
 	zoomInput.value = Math.floor(100/zoom) + "%";
 	iterInput.value = max_iter;
 
