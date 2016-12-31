@@ -23,9 +23,10 @@
  * @param {Integer} rymin - scaled minimum abcissa
  * @param {Integer} rymax - scaled maximum abcissa
  * @param {DOMElement} informer - element with a value field used for updating status of graph (for 'loading' prompt)
+ * @param {Boolean} smooth - enables or disables smooth coloring
  * @return {Integer} - returns int id of timer used to pace fractal loading
  */
-function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax, informer){
+function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax, informer, smooth){
 	var context = canvas.getContext("2d");
 
 	// Mandelbrot radius
@@ -92,7 +93,7 @@ function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax, informer){
 
 				// color point based on the value of count when the prior loop exits
 				var color = colors[count];
-				if(count < max_iter - 1){ // smooth coloring
+				if((count < max_iter - 1) && smooth){ // smooth coloring
 					var log_zn = Math.log(m)/2;
     					var nu = Math.log(log_zn/l2)/l2;
 					var it = count + 1 - nu;

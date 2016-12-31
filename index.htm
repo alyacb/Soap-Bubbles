@@ -23,8 +23,10 @@
     <td style="padding-left: 10px; padding-right: 10px;"><table><tr>
      <td> Zoom: </td>
      <td><input id="zoom" type="text" value="100%"></td>
-     <td class="button" id="zin" style="padding-left: 5px; width:10px;"><i class="material-icons">add_circle</i></td>
-     <td class="button" id="zout"><i class="material-icons">remove_circle</i></td>
+     <td><table><tr>
+      <td class="button" id="zin"><i class="material-icons">add_circle</i></td>
+      <td class="button" id="zout"><i class="material-icons">remove_circle</i></td>
+     </tr></table></td>
     </tr></table></td>
     <td style="width: 75px;"><table><tr><!-- Tools -->
      <td class="button" onclick="toggle_div('info')"><i class="material-icons">info</i></td> <!-- info -->
@@ -52,13 +54,13 @@
   <div id="settings" class="float">
   <h1> Settings </h1>
   <table>
-   <tr><td>
-    <table>
-     <tr><td>Number of Iterations:</td><td><input type="text" id="iter"></td></tr>
-    </table></td>
-    <td><table>
-     <tr><td><p class="hint">*The default is 23, but 50+ iterations provides the fractal with a greater depth/resolution.</td></tr>
-    </table></td>
+   <tr>
+    <td><p> Number of Iterations: <input type="text" id="iter" style="width: 25px;"></p>
+     <p class="hint"> * The default is 23, but 50+ iterations provides the fractal with a greater depth/resolution.</p></td>
+   </tr>
+   <tr>
+    <td><p> Enable Smooth Coloring: <input type="checkbox" id="smooth" style="width: 25px;"></p>
+     <p class="hint"> * Enabled by default, but disabling decreases load-times. </p></td>
    </tr>
   </table>
   <br><hr><br>
@@ -124,6 +126,9 @@
    var realInput = document.getElementById("x");
    var imInput = document.getElementById("y");
    var iterInput = document.getElementById("iter");
+   var smoothCheck = document.getElementById("smooth");
+   smoothCheck.checked = true;
+   var smooth = true;
 
    map.addEventListener('dblclick', function() { fractal_zoom(2/3); });
    map.addEventListener("click", fractal_move);
@@ -152,6 +157,10 @@
 		}
 		fractal_draw();
 	}
+   });
+   smoothCheck.addEventListener("click", function(event) {
+	smooth = smoothCheck.checked;
+	fractal_draw();
    });
 
    var timer = -1;
@@ -236,7 +245,7 @@
    	setTimeout(function(){
 		clearInterval(timer);
 		timer = -1;
-		timer = graph(map, max_iter, zoom*xmin, zoom*xmax, zoom*ymin, zoom*ymax, informer);
+		timer = graph(map, max_iter, zoom*xmin, zoom*xmax, zoom*ymin, zoom*ymax, informer, smooth);
 	}, 1);
    }
 
