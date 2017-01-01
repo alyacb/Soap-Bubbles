@@ -93,7 +93,7 @@ function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax, informer, smooth){
 
 				// color point based on the value of count when the prior loop exits
 				var color = colors[count];
-				if((count < max_iter - 1) && smooth){ // smooth coloring
+				if((count < max_iter) && smooth){ // smooth coloring
 					var log_zn = Math.log(m)/2;
     					var nu = Math.log(log_zn/l2)/l2;
 					var it = count + 1 - nu;
