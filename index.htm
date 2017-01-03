@@ -56,11 +56,20 @@
   <table>
    <tr>
     <td><p> Number of Iterations: <input type="text" id="iter" style="width: 25px;"></p>
-     <p class="hint"> * The default is 23, but 50+ iterations provides the fractal with a greater depth/resolution.</p></td>
+     <p class="hint"> * The default is 23, but 50+ iterations provides the fractal with a greater depth/resolution. </p></td>
    </tr>
    <tr>
     <td><p> Enable Smooth Coloring: <input type="checkbox" id="smooth" style="width: 25px;"></p>
      <p class="hint"> * Enabled by default, but disabling decreases load-times and shows banding. </p></td>
+   </tr>
+   <tr>
+    <td><p> Escape Radius: <input type="text" id="radius" style="width: 25px;"></p>
+     <p class="hint"> * Note that the escape radius of a Mandelbrot Set must be at least 2. </p></td>
+   </tr>
+   <tr>
+    <td><p> Loading block size: (as % of page width and height)</p>
+     <p> &nbsp;&nbsp;&nbsp; Width: <input type="text" id="block_xf" style="width: 25px;"></p>
+     <p> &nbsp;&nbsp;&nbsp; Height: <input type="text" id="block_yf" style="width: 25px;"></p></td>
    </tr>
   </table>
   <br><hr><br>
@@ -125,7 +134,7 @@
    // initialize values, set up listeners
    var map = document.getElementById("map");
    var loading = document.getElementById("load");  
-   // This element exists purely to 'inform' on the fractal's state, so that loading can react appropriately
+   // This element exists purely to 'inform' on the fractal's state, so that the loading cue can react appropriately
    var informer = document.getElementById("informer");
    var zoomInput = document.getElementById("zoom");  
    var realInput = document.getElementById("x");
@@ -134,6 +143,12 @@
    var smoothCheck = document.getElementById("smooth");
    smoothCheck.checked = true;
    var smooth = true;
+   var threshInput = document.getElementById("radius");
+   threshInput.value = 2;
+   var blockwInput = document.getElementById("block_xf");
+   blockwInput.value = 2.5 + "%";
+   var blockhInput = document.getElementById("block_yf");
+   blockhInput.value = 5 + "%";
 
    map.addEventListener('dblclick', function() { fractal_zoom(2/3); });
    map.addEventListener("click", fractal_move);
@@ -167,6 +182,40 @@
 	smooth = smoothCheck.checked;
 	fractal_draw();
    });
+   threshInput.addEventListener("keyup", function(event) {
+	if(!isNan(threshInput.value) && threshInput.value >= 2) {
+		threshold = threshInput.value;
+	} else {
+		threshInput.value = threshold;
+	}
+	fractal_draw();
+   });
+   blockwInput.addEventListener("keyup", function(event) {
+	if(event.keyCode == 13){ // enter key
+		var wf = blockwInput.value;
+		var sym = wf.indexOf("%");
+		if(sym >= 0){
+			wf = wf.substring(0, sym);
+		}
+  	      	if(!isNaN(wf) && wf>0 && wf<=100) {
+      	        	block_xf = wf/100;
+        	}
+	        blockwInput.value = block_xf*100 + "%";
+	}
+   });
+   blockhInput.addEventListener("keyup", function(event) {
+	if(event.keyCode == 13){ // enter key
+        	var hf = blockhInput.value;
+        	var sym = hf.indexOf("%");
+       		if(sym >= 0){
+                	hf = hf.substring(0, sym);
+        	}
+        	if(!isNaN(hf) && hf>0 && hf<=100) {
+                	block_yf = hf/100;
+        	}
+        	blockhInput.value = block_yf*100 + "%";
+	}
+   });
 
    var timer = -1;
    var loadTimer = -1;
@@ -178,6 +227,9 @@
    var xmax = 2.5;
    var ymin = -1;
    var ymax = 1;
+   var threshold = 2;
+   var block_xf = 1/40;
+   var block_yf = 1/20;
 
    /**
     * Clears loadTimer, i.e. ends loading animation
@@ -250,7 +302,8 @@
    	setTimeout(function(){
 		clearInterval(timer);
 		timer = -1;
-		timer = graph(map, max_iter, zoom*xmin, zoom*xmax, zoom*ymin, zoom*ymax, informer, smooth);
+		timer = graph(map, max_iter, zoom*xmin, zoom*xmax, zoom*ymin, zoom*ymax, 
+			      informer, smooth, threshold*threshold, Math.floor(width*block_xf), Math.floor(height*block_yf));
 	}, 1);
    }
 

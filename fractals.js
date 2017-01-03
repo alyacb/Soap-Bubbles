@@ -24,13 +24,14 @@
  * @param {Integer} rymax - scaled maximum abcissa
  * @param {DOMElement} informer - element with a value field used for updating status of graph (for 'loading' prompt)
  * @param {Boolean} smooth - enables or disables smooth coloring
+ * @param {Number} threshold - mandelbrot radius
+ * @param {Number} xd - (in pixels) width of each block to be loaded
+ * @param {Number} yd - (in pixels) height of each block to be loaded
  * @return {Integer} - returns int id of timer used to pace fractal loading
  */
-function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax, informer, smooth){
+function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax, 
+               informer, smooth, threshold, xd, yd){
 	var context = canvas.getContext("2d");
-
-	// Mandelbrot radius
-	var threshold = 4;
 
 	var xdiff = canvas.width;
 	var ydiff = canvas.height;
@@ -40,8 +41,6 @@ function graph(canvas, max_iter, rxmin, rxmax, rymin, rymax, informer, smooth){
 	// constant values
 	var xf = rangex/xdiff;
 	var yf = rangey/ydiff;
-	var xd = Math.round(xdiff/40); // width of rectangle subdivision
-	var yd = Math.round(ydiff/20); // height of rectangle subdivision
 	var xc = rxmax;
 	var yc = rymax;
 	var ptw = 1; // point-square width
